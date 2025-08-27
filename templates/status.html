@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>BRVM-FinRisk — Statut & Probabilité de défaillance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg1:#0b1020; --bg2:#0f172a; --card:#101727;
+      --ink:#e6ebf3; --muted:#9fb0c7; --line:rgba(148,163,184,.18);
+      --brand:#1e3a8a; --brand2:#2563eb; --accent:#10b981; --gold:#d4af37; --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--ink);
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(37,99,235,.25), transparent 60%),
+        radial-gradient(1000px 500px at 110% 20%, rgba(16,185,129,.18), transparent 60%),
+        linear-gradient(135deg,var(--bg1),var(--bg2));
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+
+    /* Header */
+    .header{
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:saturate(140%) blur(6px);
+      background:linear-gradient(180deg,rgba(9,12,22,.75),rgba(9,12,22,.35));
+      border-bottom:1px solid var(--line)
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .logo{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;
+      background:conic-gradient(from 210deg,var(--brand2),var(--brand),#0ea5e9)}
+    .logo svg{width:18px;height:18px;fill:#fff}
+    .brand span{letter-spacing:.3px}
+    .links{display:flex;gap:22px}
+    .links a{color:var(--muted);font-weight:600}
+    .cta{padding:10px 14px;border-radius:10px;background:var(--brand2);color:white;font-weight:700}
+
+    /* Page */
+    .page{padding:28px 0}
+    .title{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .h1{font-size:30px;font-weight:900;margin:0}
+    .muted{color:var(--muted)}
+
+    /* Toolbar / filter */
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{appearance:none;border:0;border-radius:12px;padding:10px 14px;font-weight:700;color:white;background:var(--brand2);cursor:pointer}
+    .btn.alt{background:#0b1220;border:1px solid var(--line);color:var(--ink)}
+    .btn.green{background:var(--accent)}
+    .btn.gold{background:linear-gradient(135deg,#caa93c,#e4c867)}
+    .panel{margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .input{flex:1;min-width:240px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:var(--ink)}
+    .chip{border:1px solid var(--line);background:rgba(16,23,39,.6);padding:6px 10px;border-radius:999px;font-size:12px}
+
+    /* KPI cards */
+    .kpis{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    @media (max-width:900px){.kpis{grid-template-columns:1fr}}
+    .card{background:rgba(16,23,39,.65);border:1px solid var(--line);border-radius:16px;padding:16px;position:relative;overflow:hidden}
+    .k-title{display:flex;align-items:center;gap:8px}
+    .ico{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(37,99,235,.16);border:1px solid var(--line)}
+    .ico svg{width:16px;height:16px;fill:#9ec2ff}
+    .k-num{font-size:28px;font-weight:900;margin-top:6px}
+
+    /* Status legend */
+    .legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .tag{padding:4px 8px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block}
+    .tag.ok{background:rgba(16,185,129,.16);color:#86efac;border:1px solid rgba(16,185,129,.24)}
+    .tag.risk{background:rgba(239,68,68,.16);color:#fecaca;border:1px solid rgba(239,68,68,.24)}
+
+    /* Table */
+    .table-wrap{margin-top:16px;background:rgba(16,23,39,.75);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    thead th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#0c1424}
+    th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left}
+    tbody tr:hover{background:rgba(37,99,235,.06)}
+    .empty{padding:18px}
+
+    /* Footer */
+    .footer{margin-top:28px;border-top:1px solid var(--line);padding:16px 0;color:var(--muted);font-size:13px}
+    .ename{display:flex;align-items:center;gap:8px}
+    .ename img{height:24px;vertical-align:middle}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 18h2v-7H5v7zm6 0h2V6h-2v12zm6 0h2v-4h-2v4z"/></svg>
+        </div>
+        <span>BRVM-FinRisk</span>
+      </div>
+      <nav class="links">
+        <a href="{{ url_for('home') }}">Accueil</a>
+        <a class="cta" href="{{ url_for('rating', id=ticket, company=company) }}">Évaluer la notation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap page">
+    <!-- Title + actions -->
+    <div class="title">
+      <div>
+        <h1 class="h1">Statut & Probabilité de défaillance</h1>
+        <div class="muted">Vue opérationnelle minimaliste pour décision rapide.</div>
+      </div>
+      <div class="toolbar">
+        <a class="btn alt" href="{{ url_for('download', id=ticket, fmt='csv') }}">Exporter CSV</a>
+        <a class="btn gold" href="{{ url_for('download', id=ticket, fmt='xlsx') }}">Exporter XLSX</a>
+        <a class="btn green" href="{{ url_for('rating', id=ticket, company=company) }}">Évaluer la notation</a>
+      </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="card" style="border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08);margin-top:10px">
+          {% for m in messages %}<div>{{ m }}</div>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Filter -->
+    <form class="panel" method="get" action="{{ url_for('status') }}">
+      <input type="hidden" name="id" value="{{ ticket }}">
+      <input class="input" type="text" name="company"
+             placeholder="Filtrer par entreprise (ex. SONATEL SENEGAL)"
+             value="{{ company or '' }}">
+      <button class="btn" type="submit">Filtrer</button>
+      {% if company %}
+        <span class="chip">Filtre actif : <strong>{{ company }}</strong></span>
+      {% else %}
+        <span class="chip">Astuce : utilisez le filtre pour n’afficher qu’une entreprise</span>
+      {% endif %}
+    </form>
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="card">
+        <div class="k-title">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 5h18v2H3zM3 11h18v2H3zM3 17h18v2H3z"/></svg></div>
+          <div class="muted">Enregistrements</div>
+        </div>
+        <div class="k-num">{{ kpi.n }}</div>
+      </div>
+      <div class="card">
+        <div class="k-title">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21 3 12l1.41-1.41L12 18.17l7.59-7.58L21 12z"/></svg></div>
+          <div class="muted">Entreprises saines</div>
+        </div>
+        <div class="k-num">{{ kpi.nb_saines }}</div>
+      </div>
+      <div class="card">
+        <div class="k-title">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div>
+          <div class="muted">Entreprises défaillantes</div>
+        </div>
+        <div class="k-num">{{ kpi.nb_def }}</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="muted">Légende : </span>
+      <span class="tag ok">Saine</span>
+      <span class="tag risk">Défaillante</span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap" role="region" aria-label="Tableau: Entreprise, Année, Statut, PD">
+      <table>
+        <thead>
+          <tr>
+            <th>Entreprise</th>
+            <th>Année</th>
+            <th>Statut</th>
+            <th>PD (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if table and table|length %}
+            {% for row in table %}
+              <tr>
+                <td class="ename">
+                  {% if row["Entreprise"] and "SONATEL" in row["Entreprise"]|upper %}
+                    <img src="{{ url_for('static', filename='img/sonatel.png') }}"
+                         alt="Sonatel logo">
+                  {% endif %}
+                  <span>{{ row["Entreprise"] }}</span>
+                </td>
+                <td>{{ row["Année"] }}</td>
+                <td>
+                  {% set s = (row["Statut"] or "")|string|lower %}
+                  {% set s = s.replace("é","e").replace("è","e").replace("ê","e") %}
+                  {% if s[:2] == "sa" %}
+                    <span class="tag ok">Saine</span>
+                  {% elif s[:2] == "de" or "defaill" in s %}
+                    <span class="tag risk">Défaillante</span>
+                  {% else %}
+                    <span class="tag">{{ row["Statut"] }}</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if "PD (%)" in row %}
+                    {{ "%.2f"|format(row["PD (%)"]) }}
+                  {% else %}—{% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="4" class="empty muted">Aucune ligne à afficher. Vérifiez votre filtre ou votre fichier.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Actions -->
+    <div class="toolbar" style="margin-top:12px">
+      <a class="btn green" href="{{ url_for('rating', id=ticket, company=company) }}">Évaluer la notation</a>
+      <a class="btn alt" href="{{ url_for('home') }}">Revenir à l’accueil</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div>© <span id="y"></span> BRVM-FinRisk — Tous droits réservés</div>
+      <div class="muted">Confidentialité • Sécurité • Conformité</div>
+    </div>
+  </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <!-- v:status-with-logo -->
+</body>
+</html>

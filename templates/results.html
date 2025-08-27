@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Résultats — BRVM Risk{% endblock %}
+{% block content %}
+<section class="grid lg:grid-cols-3 gap-8">
+  <div class="lg:col-span-3 grid md:grid-cols-3 gap-6">
+    <div class="card bg-white p-6">
+      <div class="text-sm text-slate-500">Entreprises</div>
+      <div class="text-2xl font-semibold">{{ kpi.n }}</div>
+    </div>
+    <div class="card bg-white p-6">
+      <div class="text-sm text-slate-500">PD moyenne</div>
+      <div class="text-2xl font-semibold">{{ '%.2f'|format(kpi.pd_moy) }}%</div>
+    </div>
+    <div class="card bg-white p-6">
+      <div class="text-sm text-slate-500">Distribution des notes</div>
+      <div class="text-sm mt-2">
+        {% for grade, cnt in dist.items() %}
+          <span class="inline-flex items-center justify-center px-3 py-1 rounded-xl bg-slate-100 mr-2 mb-2">{{ grade }} : {{ cnt }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-3 card bg-white p-6 overflow-x-auto">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold">Tableau des résultats</h2>
+      <div class="space-x-2">
+        <a class="px-4 py-2 rounded-xl bg-slate-900 text-white" href="{{ url_for('download', id=ticket, fmt='xlsx') }}">Exporter XLSX</a>
+        <a class="px-4 py-2 rounded-xl bg-slate-100" href="{{ url_for('download', id=ticket, fmt='csv') }}">Exporter CSV</a>
+      </div>
+    </div>
+    <table class="min-w-full text-sm">
+      <thead class="sticky top-0 bg-white">
+        <tr>
+          {% for c in columns %}
+            <th class="text-left font-semibold px-3 py-2 border-b">{{ c }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in table %}
+          <tr class="hover:bg-slate-50">
+            {% for c in columns %}
+              <td class="px-3 py-2 border-b">{{ row[c] }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="text-slate-500 text-xs mt-3">Affichage limité aux 50 premières lignes pour l'aperçu.</div>
+  </div>
+</section>
+{% endblock %}

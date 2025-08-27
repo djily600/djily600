@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}BRVM Risk — Notation (AAA..C){% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      html { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans'; }
+      .card { border-radius: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+      .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,0.65); }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800">
+    <header class="px-6 lg:px-12 py-6">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-2xl bg-slate-900 text-white grid place-items-center font-bold">BR</div>
+          <div class="text-xl font-semibold">BRVM Risk — Scoring & Notation</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="px-6 lg:px-12 pb-20">
+      <div class="max-w-6xl mx-auto">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="mb-6 space-y-2">
+              {% for msg in messages %}
+                <div class="bg-red-50 text-red-700 border border-red-200 px-4 py-3 rounded-xl">{{ msg }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+
+    <footer class="py-8 text-center text-sm text-slate-500">
+      © {{ 2025 }} BRVM Risk — Mémoire (Application démonstrateur)
+    </footer>
+  </body>
+</html>

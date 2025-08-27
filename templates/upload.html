@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>BRVM-FinRisk — Anticipez le risque, sécurisez vos décisions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg1:#0b1020; --bg2:#0f172a; --card:#0f1628;
+      --ink:#e7edf7; --muted:#9fb0c7; --line:rgba(148,163,184,.18);
+      --brand:#1e3a8a; --brand2:#2563eb; --accent:#10b981; --gold:#d4af37;
+      --glow1:rgba(37,99,235,.18); --glow2:rgba(16,185,129,.16);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--ink);
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
+      background:
+        radial-gradient(1000px 600px at 20% -10%, var(--glow1), transparent 60%),
+        radial-gradient(900px 500px at 120% 0%, var(--glow2), transparent 60%),
+        linear-gradient(135deg,var(--bg1),var(--bg2));
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+
+    /* Header */
+    .header{
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:saturate(140%) blur(8px);
+      background:linear-gradient(180deg,rgba(8,12,22,.75),rgba(8,12,22,.35));
+      border-bottom:1px solid var(--line)
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.3px}
+    .mark{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;
+      background:conic-gradient(from 210deg,var(--brand2),var(--brand),#0ea5e9)}
+    .mark svg{width:20px;height:20px;fill:#fff}
+    .links{display:flex;gap:22px}
+    .links a{color:var(--muted);font-weight:600}
+    .cta{padding:10px 14px;border-radius:12px;background:var(--brand2);color:white;font-weight:800}
+
+    /* Hero */
+    .hero{padding:82px 0 34px}
+    .split{display:grid;grid-template-columns:1.25fr .75fr;gap:28px}
+    @media (max-width:980px){.split{grid-template-columns:1fr}}
+    .kicker{color:var(--gold);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+    .title{font-size:44px;line-height:1.06;margin:10px 0 12px;font-weight:900}
+    .sub{color:var(--muted);font-size:16px;margin:8px 0 18px}
+    .badges{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 26px}
+    .badge{border:1px solid var(--line);background:rgba(16,23,39,.55);
+      padding:7px 11px;border-radius:999px;font-size:12px}
+
+    /* Upload */
+    .card{background:rgba(16,23,39,.85);border:1px solid var(--line);border-radius:18px;padding:18px;position:relative;overflow:hidden}
+    .card:before{content:"";position:absolute;inset:-1px;
+      background:radial-gradient(420px 220px at 110% -20%, rgba(37,99,235,.12), transparent 60%);
+      pointer-events:none}
+    .card h3{margin:0 0 10px}
+    .file{width:100%;padding:12px;border:1px dashed var(--line);border-radius:12px;background:#0b1220;color:var(--ink)}
+    .row{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font-weight:800;color:white;background:var(--brand2);cursor:pointer}
+    .btn.alt{background:#0b1220;border:1px solid var(--line);color:var(--ink)}
+    .hint{color:var(--muted);font-size:12px}
+
+    /* Gauge demo */
+    .gauge{background:rgba(16,23,39,.75);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:12px}
+    .g-wrap{display:flex;align-items:center;gap:18px}
+    .g-svg{width:170px;height:170px}
+    .g-num{font-size:30px;font-weight:900}
+    .g-note{font-size:28px;font-weight:900;margin-top:4px}
+    .g-input{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .g-input input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:var(--ink)}
+    .scale{display:flex;justify-content:space-between;font-size:11px;color:#b7c5da;margin-top:8px}
+
+    /* Sections */
+    .section{padding:34px 0 18px}
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    @media (max-width:980px){.cards{grid-template-columns:1fr}}
+    .feat{background:rgba(16,23,39,.7);border:1px solid var(--line);border-radius:16px;padding:16px}
+    .feat h4{margin:0 0 6px}
+    .ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;margin-bottom:8px;
+      background:linear-gradient(135deg,rgba(37,99,235,.22),rgba(37,99,235,.06));border:1px solid var(--line)}
+    .ico svg{width:18px;height:18px;fill:#9ec2ff}
+
+    /* Highlights (stats) */
+    .stats{background:
+      radial-gradient(circle at top left, rgba(37,99,235,.15), transparent 70%),
+      radial-gradient(circle at bottom right, rgba(16,185,129,.15), transparent 70%),
+      #0d1425;
+      padding:60px 20px;border-radius:18px;margin-top:40px}
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1000px;margin:0 auto}
+    @media (max-width:980px){.stats-grid{grid-template-columns:1fr}}
+    .stat{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:26px}
+    .stat .num{font-size:38px;font-weight:900}
+    .num.accent{color:var(--accent)} .num.gold{color:var(--gold)} .num.brand{color:var(--brand2)}
+
+    /* Footer */
+    .footer{margin-top:40px;border-top:1px solid var(--line);padding:16px 0;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 18h2v-7H5v7zm6 0h2V6h-2v12zm6 0h2v-4h-2v4z"/></svg>
+        </div>
+        <span>BRVM-FinRisk</span>
+      </div>
+      <nav class="links">
+        <a href="#about">À propos</a>
+        <a href="#features">Fonctionnalités</a>
+        <a href="#contact">Contact</a>
+        <a class="cta" href="#upload">Commencer l’analyse</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="split">
+        <div>
+          <div class="kicker">Finance • Notation • BRVM</div>
+          <h1 class="title">Anticipez le risque,<br>sécurisez vos décisions</h1>
+          <p class="sub">
+            BRVM-FinRisk estime la probabilité de défaillance et délivre une
+            <strong>notation claire (AAA → C)</strong>. Conçu pour une analyse
+            fiable et élégante des entreprises des marchés africains.
+          </p>
+          <div class="badges">
+            <div class="badge">Modèles ML calibrés</div>
+            <div class="badge">Sécurité & confidentialité</div>
+            <div class="badge">Exports XLSX / CSV</div>
+            <div class="badge">Tableaux dynamiques</div>
+          </div>
+
+          <!-- Gauge demo -->
+          <div class="gauge" aria-live="polite">
+            <div class="g-wrap">
+              <svg class="g-svg" viewBox="0 0 100 60" role="img" aria-label="Jauge de risque démo">
+                <!-- arc fond -->
+                <defs>
+                  <linearGradient id="grad">
+                    <stop offset="0%" stop-color="#22c55e"/>
+                    <stop offset="50%" stop-color="#eab308"/>
+                    <stop offset="100%" stop-color="#ef4444"/>
+                  </linearGradient>
+                </defs>
+                <path d="M10,60 A40,40 0 0,1 90,60" stroke="#1a2742" stroke-width="10" fill="none"/>
+                <!-- arc valeur (dégradé) -->
+                <path id="arc" d="M10,60 A40,40 0 0,1 90,60" stroke="url(#grad)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="0 999"/>
+                <!-- curseur -->
+                <circle id="knob" cx="10" cy="60" r="4" fill="#e5e7eb"/>
+              </svg>
+              <div>
+                <div class="g-num"><span id="pd">12.0</span>% PD</div>
+                <div class="g-note">Note : <span id="grade">BBB</span></div>
+                <div class="g-input">
+                  <label for="demo" class="sub" style="margin:0">Simulateur express</label>
+                  <input id="demo" type="range" min="0" max="100" step="0.1" value="12" aria-label="Probabilité de défaillance en % (démo)">
+                </div>
+                <div class="scale"><span>0%</span><span>50%</span><span>100%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload card -->
+        <div id="upload" class="card">
+          <h3>Importer votre fichier</h3>
+          <p class="sub" style="margin:6px 0 12px;">
+            Formats acceptés : <strong>.xlsx</strong>, <strong>.xls</strong><br>
+            Toutes les analyses sont réalisées à partir de vos données.
+          </p>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div style="color:#fca5a5;margin-bottom:8px">
+                {% for m in messages %}{{ m }}<br>{% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+          <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+            <input class="file" type="file" name="file" accept=".xlsx,.xls" required>
+            <div class="row">
+              <button class="btn" type="submit">Analyser maintenant</button>
+              <a class="btn alt" href="#features">Voir les fonctionnalités</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🌟 Highlights / Stats (après le bouton "Voir les fonctionnalités") -->
+    <section class="stats" aria-label="Points forts">
+      <div class="wrap" style="text-align:center">
+        <h2 style="font-size:32px;font-weight:900;margin-bottom:30px;">
+          Pourquoi <span style="color:var(--brand2)">BRVM-FinRisk</span> est unique ?
+        </h2>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="num accent" data-countup="120" data-suffix="+">0</div>
+            <div class="sub">Entreprises déjà notées</div>
+          </div>
+          <div class="stat">
+            <div class="num gold" data-countup="99.2" data-decimals="1" data-suffix="%">0</div>
+            <div class="sub">Taux de fiabilité</div>
+          </div>
+          <div class="stat">
+            <div class="num brand" data-countup="24" data-suffix="/7">0</div>
+            <div class="sub">Accès sécurisé en continu</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section">
+      <div class="cards">
+        <div class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l9 6-9 6-9-6 9-6zm0 8.7l7.5-5L12 4.5 4.5 6.7 12 11.7zM21 14l-9 6-9-6"/></svg></div>
+          <h4>Notation financière</h4>
+          <p class="sub">Barème AAA → C avec seuils dynamiques et prudence sectorielle.</p>
+        </div>
+        <div class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div>
+          <h4>Prédiction du risque</h4>
+          <p class="sub">Modèles ML calibrés, gestion des valeurs manquantes, harmonisation.</p>
+        </div>
+        <div class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 7V3L1 9l11 6 9-4.91V17h2V9L12 7zM3 13v6l9 4 9-4v-6l-9 4-9-4z"/></svg></div>
+          <h4>Exports & traçabilité</h4>
+          <p class="sub">Exports XLSX/CSV, statuts clairs et rapports propres.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="section">
+      <div class="feat">
+        <h4>À propos</h4>
+        <p class="sub">
+          BRVM-FinRisk s’adresse aux analystes, banques et investisseurs.
+          La méthodologie fusionne règles métiers transparentes et modèles récents
+          pour une évaluation <strong>fiable, reproductible et élégante</strong>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+      <div class="feat">
+        <h4>Contact & Support</h4>
+        <p class="sub">Besoin d’une démo ou d’une version entreprise (SSO, audit, SLA) ? Écrivez-nous.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div>© <span id="y"></span> BRVM-FinRisk — Tous droits réservés</div>
+      <div class="sub">Confidentialité • Sécurité • Conformité</div>
+    </div>
+  </footer>
+
+  <script>
+    // Footer year
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Gauge demo (front only)
+    const input = document.getElementById('demo');
+    const pdSpan = document.getElementById('pd');
+    const arc = document.getElementById('arc');
+    const knob = document.getElementById('knob');
+    const grade = document.getElementById('grade');
+
+    function pdToGrade(p){
+      const x = p/100;
+      if (x<=0.01) return 'AAA';
+      if (x<=0.03) return 'AA';
+      if (x<=0.06) return 'A';
+      if (x<=0.10) return 'BBB';
+      if (x<=0.15) return 'BB';
+      if (x<=0.25) return 'B';
+      if (x<=0.40) return 'CCC';
+      if (x<=0.60) return 'CC';
+      return 'C';
+    }
+    function renderGauge(p){
+      const maxLen = 126;                  // longueur approx de l’arc
+      const len = Math.max(0, Math.min(maxLen, maxLen*(p/100)));
+      arc.setAttribute('stroke-dasharray', `${len} 999`);
+
+      // position du curseur sur l’arc (0..π)
+      const angle = Math.PI * (p/100);
+      const cx = 10 + 40 + 40*Math.cos(Math.PI - angle);
+      const cy = 60 - 40*Math.sin(Math.PI - angle);
+      knob.setAttribute('cx', cx.toFixed(2));
+      knob.setAttribute('cy', cy.toFixed(2));
+
+      pdSpan.textContent = (+p).toFixed(1);
+      grade.textContent = pdToGrade(p);
+    }
+    input.addEventListener('input', (e)=> renderGauge(+e.target.value));
+    renderGauge(+input.value);
+
+    // Count-up des stats (IntersectionObserver)
+    const counters = document.querySelectorAll('[data-countup]');
+    const easeOut = t => 1 - Math.pow(1 - t, 3); // easing cubique
+    function animateCount(el){
+      const target = parseFloat(el.getAttribute('data-countup') || '0');
+      const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+      const suffix = el.getAttribute('data-suffix') || '';
+      const startTime = performance.now();
+      const duration = 1200 + Math.random()*800; // 1.2s - 2s
+
+      function step(now){
+        const p = Math.min(1, (now - startTime)/duration);
+        const v = target * easeOut(p);
+        el.textContent = v.toFixed(decimals) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const el = e.target;
+          if(!el.dataset.done){
+            el.dataset.done = '1';
+            animateCount(el);
+          }
+        }
+      })
+    }, {threshold: 0.3});
+    counters.forEach(c=> io.observe(c));
+  </script>
+</body>
+</html>
